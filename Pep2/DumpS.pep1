@@ -1,0 +1,55 @@
+           .GLOBAL  DumpS
+Acopy:     .BLOCK   2
+Xcopy:     .BLOCK   2
+display:   .BLOCK   2
+actual:    .BLOCK   2
+dmsg:      .ASCII   "------------------------------- DUMPS\n\x00"
+cmsg:      .ASCII   ",\x00"
+amsg:      .ASCII   "(A=\x00"
+xmsg:      .ASCII   "(X=\x00"
+dlmsg:     .ASCII   ": \x00"
+DumpSN:    .EQUATE  2
+DumpS:     NOP0
+           STWA     Acopy,d
+           STWX     Xcopy,d
+           STRO     dmsg,d
+           STWA     actual,d
+           STRO     amsg,d
+           HEXO     actual,d
+           STRO     cmsg,d
+           DECO     actual,d
+           LDBA     ')',i
+           STBA     charOut,d
+           STRO     cmsg,d
+           STWX     actual,d
+           STRO     xmsg,d
+           HEXO     actual,d
+           STRO     cmsg,d
+           DECO     actual,d
+           LDBA     ')',i
+           STBA     charOut,d
+           LDBA     '\n',i
+           STBA     charOut,d
+           LDWX     DumpSN,s
+           MOVSPA
+           ADDA     4,i
+           STWA     actual,d
+DumpLoop:  CPWX     0,i
+           BRLE     DumpDone
+           HEXO     actual,d
+           STRO     dlmsg,d
+           LDWA     actual,n
+           STWA     display,d
+           HEXO     display,d
+           STRO     cmsg,d
+           DECO     display,d
+           LDBA     '\n',i
+           STBA     charOut,d
+           LDWA     actual,d
+           ADDA     2,i
+           STWA     actual,d
+           SUBX     2,i
+           BR       DumpLoop
+DumpDone:  LDWX     Xcopy,d
+           LDWA     Acopy,d
+           RET

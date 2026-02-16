@@ -1,0 +1,48 @@
+           .GLOBAL  STRInput
+STRInput:  NOP0
+           SAVEX
+Sobject:   .EQUATE  6
+capacity:  .EQUATE  0
+ignored:   .EQUATE  2
+           SUBSP    4,i
+           LDWA     0,i
+           STWA     ignored,s
+           LDWX     -1,i
+           LDWA     0,i
+           LDBA     Sobject,sfx
+           STWA     capacity,s
+           LDWX     0,i
+           CPWX     capacity,s
+           BRGE     error
+           LDWA     0,i
+loop:      CPWX     capacity,s
+           BREQ     full
+           LDBA     charIn,d
+           STBA     Sobject,sfx
+           LDBA     Sobject,sfx
+           CPWA     '\n',i
+           BREQ     done
+           ADDX     1,i
+           BR       loop
+full:      LDWA     ignored,s
+           ADDA     1,i
+           STWA     ignored,s
+           SUBX     1,i
+ignore:    LDBA     charIn,d
+           STBA     Sobject,sfx
+           LDWA     0,i
+           LDBA     Sobject,sfx
+           CPWA     '\n',i
+           BREQ     done
+           LDWA     ignored,s
+           ADDA     1,i
+           STWA     ignored,s
+           BR       ignore
+done:      LDBA     0,i
+           STBA     Sobject,sfx
+           LDWA     ignored,s
+           BR       return
+error:     LDWA     -1,i
+return:    ADDSP    4,i          ;
+           RESTOREX
+           RET                   ;

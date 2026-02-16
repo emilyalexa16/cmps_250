@@ -1,0 +1,168 @@
+           BR        main
+           .INCLUDE  "PEP2.pep1"
+title:     .ASCII    "PMJ's PEP2 Illustrator ...\n\x00"
+prompt1:   .ASCII    "Enter a small positive integer:\x00"
+prompt2:   .ASCII    "Enter another:\x00"
+value1:    .BLOCK    2
+value2:    .BLOCK    2
+default:   .WORD     1024
+;-----------------------------------------------------------------------
+comma:     .ASCII    ",\x00"
+newLine:   .ASCII    "\n\x00"
+mDHB:      .ASCII    "DECOA,DECOX,HEXOA,HEXOX,BINOA,BINOX\n\x00"
+mCLRr:     .ASCII    "CLRWA,CLRBA,CLRWX,CLRBX\n\x00"
+mBIN:      .ASCII    "BINO\n\x00"
+mCLR:      .ASCII    "CLRW,CLRB\n\x00"
+mINCDECr:  .ASCII    "INCA,INCX,DECA,DECX\n\x00"
+mINCDEC:   .ASCII    "INC,DEC\n\x00"
+mNEGNOT:   .ASCII    "NEG,NOT\n\x00"
+mADDSUB:   .ASCII    "ADD,SUB\n\x00"
+mDUMPS:    .ASCII    "DUMPS\n\x00"
+mPP:       .ASCII    "PUSH,POP,PUSHA,POPA,PUSHX,POPX and DUMPS\n\x00"
+mDONE:     .ASCII    "DONE!!!\n\x00"
+;-----------------------------------------------------------------------
+m:         .BLOCK    2
+           .BLOCK    2
+addend:    .WORD     23
+subtrnd:   .WORD     19
+ignore:    .BLOCK    2
+main:      STRO      title,d
+           STRO      prompt1,d
+           DECI      value1,d
+           STRO      prompt2,d
+           DECI      value2,d
+; Illustrate DECOA, DECOX, HEXOA, HEXOX, BINOA, BINOX
+           STRO      mDHB,d
+           LDWA      value1,d
+           CALL      ShowA
+           LDWX      value1,d
+           CALL      ShowX
+; Illustrate CLRWA, CLRBA, CLRWX, CLRBX
+           STRO      mCLRr,d
+           CLRWA
+           CALL      ShowA
+           LDWA      default,d
+           CLRBA
+           CALL      ShowA
+           CLRWX
+           CALL      ShowX
+           LDWX      default,d
+           CLRBX
+           CALL      ShowX
+; Illustrate BINO
+           STRO      mBIN,d
+           LDWA      value1,d
+           STWA      m,d
+           CALL      Showm
+; Illustrate CLRW, CLRB
+           STRO      mCLR,d
+           CLRW      m,d
+           CALL      Showm
+           LDWA      value1,d
+           STWA      m,d
+           CLRB      m,d
+           CALL      Showm
+; Illustrate INCA, INCX, DECA, DECX
+           STRO      mINCDECr,d
+           LDWA      value1,d
+           INCA
+           INCA
+           CALL      ShowA
+           LDWX      value1,d
+           INCX
+           INCX
+           CALL      ShowX
+           DECA
+           CALL      ShowA
+           DECX
+           CALL      ShowX
+; Illustrate INC, DEC
+           STRO      mINCDEC,d
+           LDWA      value1,d
+           STWA      m,d
+           INC       m,d
+           INC       m,d
+           CALL      Showm
+           DEC       m,d
+           CALL      Showm
+; Illustrate NEG, NOT
+           STRO      mNEGNOT,d
+           LDWA      value1,d
+           STWA      m,d
+           CALL      Showm
+           NEG       m,d
+           CALL      Showm
+           LDWA      value1,d
+           STWA      m,d
+           NOT       m,d
+           CALL      Showm
+; Illustrate ADD, SUB
+           STRO      mADDSUB,d
+           LDWA      0,i
+           STWA      m,d
+           ADD       m,d,value1,d
+           CALL      Showm
+           SUB       m,d,value2,d
+           CALL      Showm
+; Illustrate DUMPS
+           LDWA      value1,d
+           LDWX      value2,d
+           STRO      mDUMPS,d
+           DUMPS     16,i
+; Illustrate PUSH,POP,PUSHA,POPA,PUSHX,POPX and DUMPS
+           STRO      mPP,d
+           LDWA      default,d
+           STWA      m,d
+           PUSH      m,d
+           CALL      ShowD
+           POP       ignore,d
+; Don1
+           STRO      mDONE,d
+           STOP
+
+
+
+TextA:     .ASCII    "A contains \x00"
+ShowA:     STRO      TextA,d
+           DECOA
+           STRO      comma,d
+           HEXOA
+           STRO      comma,d
+           BINOA
+           STRO      newLine,d
+           RET
+
+TextX:     .ASCII    "X contains \x00"
+ShowX:     STRO      TextX,d
+           DECOX
+           STRO      comma,d
+           HEXOX
+           STRO      comma,d
+           BINOX
+           STRO      newLine,d
+           RET
+
+Textm:     .ASCII    "m contains \x00"
+Showm:     STRO      Textm,d
+           DECO      m,d
+           STRO      comma,d
+           BINO      m,d
+           STRO      newLine,d
+           RET
+
+TextD:     .ASCII    "Inside subprogram\n\x00"
+TextU:     .ASCII    "After pushes\n\x00"
+TextO:     .ASCII    "After pops\n\x00"
+ShowD:     STRO      TextD,d
+           DUMPS     16,i
+           PUSH      value1,d
+           PUSH      value2,d
+           STRO      TextU,d
+           DUMPS     16,i
+           POPA
+           POPX
+           STRO      TextO,d
+           DUMPS     16,i
+           RET
+
+           .END

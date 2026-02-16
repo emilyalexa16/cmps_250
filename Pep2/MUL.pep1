@@ -1,0 +1,88 @@
+           .GLOBAL  MUL
+;*******************************
+;***Multiplication Subprogram***
+;*******************************
+;**Parameters
+t1:        .EQUATE  6
+t2:        .EQUATE  8
+;**Local Variables
+sign:      .EQUATE  0
+n:         .EQUATE  2
+;*******************************
+MUL:       LDWA     16,i
+           STWA     -2,s
+           SUBSP    2,i
+           LDWA     1,i
+           STWA     -2,s
+           SUBSP    2,i
+TestT1:    NOP0
+           LDWA     t1,s
+           CPWA     0,i
+           BRGE     TestT2
+           STWA     SAVEA,d
+           LDWA     sign,s
+           SUBA     1,i
+           STWA     sign,s
+           LDWA     SAVEA,d
+TestT2:    NOP0
+           LDWA     t2,s
+           CPWA     0,i
+           BRGE     InitMul
+           STWA     SAVEA,d
+           LDWA     sign,s
+           SUBA     1,i
+           STWA     sign,s
+           LDWA     SAVEA,d
+InitMul:   LDWA     0,i
+           LDWX     t2,s
+MulLoop:   STWA     -2,s
+           LDWA     n,s
+           BREQ     Fin
+           LDWA     -2,s
+           RORX
+           BRC      ml0
+           BR       MulShftP
+ml0:       NOP0
+           ROLX
+           ADDA     t1,s
+           BR       MulShft
+MulShftP:  ROLX
+MulShft:   ASRX
+           RORA
+           BRC      LAB1
+           ROLA
+           ANDX     0x7FFF,i
+           BR       LAB2
+LAB1:      ROLA
+           ORX      0x8000,i
+LAB2:      ASRA
+MulLoop3:  STWA     -2,s
+           STWA     SAVEA,d
+           LDWA     n,s
+           SUBA     1,i
+           STWA     n,s
+           LDWA     SAVEA,d
+           LDWA     -2,s
+           BR       MulLoop
+Fin:       STWX     -2,s
+           LDWA     -2,s
+           LDWX     sign,s
+           STWA     -2,s
+oVrTest1:  NOP0
+           LDWA     sign,s
+           CPWA     0,i
+           BRNE     oVrTest2
+           LDWA     -2,s
+           CPWA     0,i
+           BRGT     OverErr
+           BR       Fin2
+oVrTest2:  LDWA     -2,s
+           CPWA     0,i
+           BRLT     OverErr
+           BR       Fin2
+OverErr:   ADDSP    4,i
+           LDWA     0x7FFF,i
+           ADDA     1,i
+           BR       RetMul
+Fin2:      ADDSP    4,i
+RetMul:    RET

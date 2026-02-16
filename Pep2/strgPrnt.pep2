@@ -1,0 +1,42 @@
+; Student Name: Emily Alexa Gotiangco
+
+;strgPrnt.pep2
+;/* Subprogram that produces a printout of the string values stored in the leading
+;   elements of the given array of strings (as indicated by the value of n), one
+;   per line.
+;*/
+           .GLOBAL  strgPrnt
+;-----------------------------------------------------------
+; void strgPrnt(char *string[], int N);
+;-----------------------------------------------------------
+string:    .EQUATE  2
+N:         .EQUATE  4
+;-----------------------------------------------------------
+address:   .BLOCK   2
+index:     .BLOCK   2
+prefix:    .ASCII   ": \"\x00"
+suffix:    .ASCII   "\"\n\x00"
+;-----------------------------------------------------------
+strgPrnt:  NOP0
+;----------
+           LDWX     0,i
+	   STWX     index,d
+loop:	   LDWX     index,d
+           CPWX     N,s		
+	   BREQ     done
+	   ASLX			
+	   ASLX
+	   ASLX
+	   ASLX
+	   ADDX     string,s    
+	   STWX     address,d
+	   DECO     index,d
+	   STRO	    prefix,d
+	   STRO     address,n   
+	   STRO	    suffix,d
+	   LDWX	    index,d	
+	   INCX			
+	   STWX	    index,d
+	   BR	    loop
+;----------
+done:      RET

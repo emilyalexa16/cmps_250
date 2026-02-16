@@ -1,0 +1,34 @@
+           .GLOBAL  BINOutpt
+m:         .EQUATE  4
+BINOutpt:  NOP0
+           SUBSP    0,i
+           STWA     SAVED,d
+           LDWA     0,i
+           STWA     -2,s
+           SUBSP    2,i
+           LDWA     SAVED,d
+           STWA     SAVEA,d
+           STWX     SAVEX,d
+           LDWA     m,s
+           LDWX     16,i
+BINOloop:  NOP0
+           CPWX     0,i
+           BREQ     BINOdone
+           ROLA
+           BRC      BINO1
+BINO0:     STWA     -2,s
+           LDBA     '0',i
+           STBA     charOut,d
+           BR       BINOnext
+BINO1:     STWA     -2,s
+           LDBA     '1',i
+           STBA     charOut,d
+BINOnext:  LDWA     -2,s
+           SUBX     1,i
+           BR       BINOloop
+BINOdone:  NOP0
+           LDWX     SAVEX,d
+           LDWA     SAVEA,d
+           ADDSP    0,s
+           ADDSP    2,i
+           RET

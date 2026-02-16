@@ -1,0 +1,25 @@
+;Slength.pep2
+;
+; A functional subprogram that returns the length of the given
+; string.  This is done by scanning for the terminating null char.
+;
+          .GLOBAL   Slength
+;-----------------------------------------------------------
+; int Slength(char string[]);
+;-----------------------------------------------------------
+string:   .EQUATE   2
+;-----------------------------------------------------------
+NC:       .ASCII    "\x00"      ;the "null char"
+;-----------------------------------------------------------
+Slength:  SAVEX
+          CLRWX                 ;  X = 0;
+loop:     LDBA      string,sfx  ;+ while(string[X] != NC) {
+          CPBA      NC,d        ;|
+          BREQ      done        ;|
+          INCX                  ;|   X = X + 1;
+          BR        loop        ;+ }
+;----------
+done:     STWX      -2,s        ;+ A = X;
+          LDWA      -2,s        ;+
+return:   RESTOREX
+          RET
